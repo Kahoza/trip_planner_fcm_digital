@@ -5,6 +5,7 @@ This repository was created as the Ruby technical challenge for FCM Digital
 ## Table of Contents
 - [Task description](#task-description)
 - [Assumptions](#assumptions)
+- [Proposed solution](#proposed-solution)
 
 ### Task description 
 As we want to provide a better experience for our users we want to represent their itinerary in the most comprehensive way possible.
@@ -60,3 +61,13 @@ Flight from BCN to NYC at 2023-03-02 15:00 to 22:45
 - A round trip is when two transportation segments share the same origin and destination 
 - A matching trip is when the origin or destination of the segment matches as well as the arrival and departure of said destination, this way we can match transportation segments (flights or trains) with accommodations (hotels) 
 - We consider two flights to be a connection if they happen within the same day
+
+### Proposed solution
+To run the task use this command in the root of the project;\
+`BASED=SVQ bundle exec rake "trip:parser[input.txt]"`
+
+The entry point of the solution will be a rake task accepting two parameters, the base city of the user, SVQ for example, and an input file with the segments of the trips.\
+The rake has a basic presence validation for the parameters, returning an error if no city is provided and using an example file (input.txt) if no file is passed to the rake task.
+If the parameters are provided, the rake task will call the `TripService`.\
+The `TripService` will first parse each line of the file and save it into an instance called `@segments`.\
+We are parsing each line based on the type of segment; Flight, Train and Hotel for now. Each of those services will return a hash containing all the information related to the specific segment for their grouping later on.
