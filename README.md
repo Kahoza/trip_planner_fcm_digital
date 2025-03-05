@@ -62,6 +62,7 @@ Flight from BCN to NYC at 2023-03-02 15:00 to 22:45
 - A round trip is when two transportation segments share the same origin and destination 
 - A matching trip is when the origin or destination of the segment matches as well as the arrival and departure of said destination, this way we can match transportation segments (flights or trains) with accommodations (hotels) 
 - We consider two flights to be a connection if they happen within the same day
+- When connecting flights, we consider the trip destination to be the destination of the second trip
 - A segment / trip is mismatched when neither the origin nor the destination matches the city where the user is based
 
 ### Proposed solution
@@ -96,3 +97,8 @@ And then later format each trip to return the expected output to the user, a com
 - At the moment the date format is YYYY-MM-DD, taking the base city of the user, adjust the format of the date, so if for example the base city of the user is SVQ (Seville) use DD-MM-YYYY instead
 - Use the name of the city instead of the IATA, so instead of trip to BCN return trip to Barcelona
 - The FlightService, TrainService and HotelService are parsing the line and matching each part of the information of the segment based on the splitted line, if the segment comes in a different format, the parsing won't be successful, this could be done using a Regex instead
+- Take advantge of the base city of the user. Taking a segment with base city as origin, we could match it with the return trip to avoid further iterations
+- We are not validating the type of file, we could add a validation to make sure the script is only used when a txt file is provided
+- If we pass an empty input file, nothing gets printed. We could add a message to the user in case this happens for them to verify the file they provided
+- We create a trip even with only one segment, maybe we could handle this situation better and inform the user about it, in case they forgot to book transportation / accommodation
+- If the base city is not provided, instead of not running the script, we could simply inform the user but still group the segments into trips
