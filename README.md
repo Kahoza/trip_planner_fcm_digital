@@ -93,3 +93,6 @@ And then later format each trip to return the expected output to the user, a com
 ### Future improvements
 - Don't assume connecting flights are composed of only two flights and within the same 24 hours. Extend the `ConnectingFlightsService` service to take into account more than 2 flights and longer layovers spanning over 24 hours
 - Handle the mismatched segments. At the moment we are just informing the user about the mismatching segments but we are not handling them in any special way
+- At the moment the date format is YYYY-MM-DD, taking the base city of the user, adjust the format of the date, so if for example the base city of the user is SVQ (Seville) use DD-MM-YYYY instead
+- Use the name of the city instead of the IATA, so instead of trip to BCN return trip to Barcelona
+- The FlightService, TrainService and HotelService are parsing the line and matching each part of the information of the segment based on the splitted line, if the segment comes in a different format, the parsing won't be successful, this could be done using a Regex instead
