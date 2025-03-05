@@ -291,7 +291,7 @@ DEPENDENCIES
   brakeman
   capybara
   debug
-  error_highlight (>= 0.4.0)
+  error_highlight (>= 0.6.0)
   importmap-rails
   jbuilder
   puma (>= 5.0)
