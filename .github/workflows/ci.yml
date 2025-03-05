@@ -1,90 +1,117 @@
-# name: CI
+name: CI
 
-# on:
-#   pull_request:
-#   push:
-#     branches: [ main ]
+on:
+  pull_request:
+  push:
+    branches: [ main ]
 
-# jobs:
-#   scan_ruby:
-#     runs-on: ubuntu-latest
+jobs:
+  scan_ruby:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-#     steps:
-#       - name: Checkout code
-#         uses: actions/checkout@v4
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: .ruby-version
+          bundler-cache: true
 
-#       - name: Set up Ruby
-#         uses: ruby/setup-ruby@v1
-#         with:
-#           ruby-version: .ruby-version
-#           bundler-cache: true
+      - name: Install correct error_highlight version
+        run: gem install error_highlight -v 0.7.0
 
-#       - name: Scan for common Rails security vulnerabilities using static analysis
-#         run: bin/brakeman --no-pager
+      - name: Update Bundler and resolve dependencies
+        run: |
+          gem install bundler -v $(grep -A1 'BUNDLED WITH' Gemfile.lock | tail -n1)
+          bundle update error_highlight
+          bundle install
 
-#   scan_js:
-#     runs-on: ubuntu-latest
+      - name: Scan for common Rails security vulnerabilities using static analysis
+        run: bin/brakeman --no-pager
 
-#     steps:
-#       - name: Checkout code
-#         uses: actions/checkout@v4
+  scan_js:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-#       - name: Set up Ruby
-#         uses: ruby/setup-ruby@v1
-#         with:
-#           ruby-version: .ruby-version
-#           bundler-cache: true
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: .ruby-version
+          bundler-cache: true
 
-#       - name: Scan for security vulnerabilities in JavaScript dependencies
-#         run: bin/importmap audit
+      - name: Install correct error_highlight version
+        run: gem install error_highlight -v 0.7.0
 
-#   lint:
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: Checkout code
-#         uses: actions/checkout@v4
+      - name: Update Bundler and resolve dependencies
+        run: |
+          gem install bundler -v $(grep -A1 'BUNDLED WITH' Gemfile.lock | tail -n1)
+          bundle config set frozen false
+          bundle update error_highlight
+          bundle install
 
-#       - name: Set up Ruby
-#         uses: ruby/setup-ruby@v1
-#         with:
-#           ruby-version: .ruby-version
-#           bundler-cache: true
+      - name: Scan for security vulnerabilities in JavaScript dependencies
+        run: bin/importmap audit
 
-#       - name: Lint code for consistent style
-#         run: bin/rubocop -f github
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-#   test:
-#     runs-on: ubuntu-latest
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: .ruby-version
+          bundler-cache: true
 
-#     # services:
-#     #  redis:
-#     #    image: redis
-#     #    ports:
-#     #      - 6379:6379
-#     #    options: --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
-#     steps:
-#       - name: Install packages
-#         run: sudo apt-get update && sudo apt-get install --no-install-recommends -y google-chrome-stable curl libjemalloc2 libvips sqlite3
+      - name: Install correct error_highlight version
+        run: gem install error_highlight -v 0.7.0
 
-#       - name: Checkout code
-#         uses: actions/checkout@v4
+      - name: Update Bundler and resolve dependencies
+        run: |
+          gem install bundler -v $(grep -A1 'BUNDLED WITH' Gemfile.lock | tail -n1)
+          bundle update error_highlight
+          bundle install
 
-#       - name: Set up Ruby
-#         uses: ruby/setup-ruby@v1
-#         with:
-#           ruby-version: .ruby-version
-#           bundler-cache: true
+      - name: Lint code for consistent style
+        run: bin/rubocop -f github
 
-#       - name: Run tests
-#         env:
-#           RAILS_ENV: test
-#           # REDIS_URL: redis://localhost:6379/0
-#         run: bin/rails db:test:prepare test test:system
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install packages
+        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y google-chrome-stable curl libjemalloc2 libvips sqlite3
 
-#       - name: Keep screenshots from failed system tests
-#         uses: actions/upload-artifact@v4
-#         if: failure()
-#         with:
-#           name: screenshots
-#           path: ${{ github.workspace }}/tmp/screenshots
-#           if-no-files-found: ignore
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: .ruby-version
+          bundler-cache: true
+
+      - name: Install correct error_highlight version
+        run: gem install error_highlight -v 0.7.0
+
+      - name: Update Bundler and resolve dependencies
+        run: |
+          gem install bundler -v $(grep -A1 'BUNDLED WITH' Gemfile.lock | tail -n1)
+          bundle update error_highlight
+          bundle install
+
+      - name: Run tests
+        env:
+          RAILS_ENV: test
+        run: bin/rails db:test:prepare test test:system
+
+      - name: Keep screenshots from failed system tests
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: screenshots
+          path: ${{ github.workspace }}/tmp/screenshots
+          if-no-files-found: ignore
