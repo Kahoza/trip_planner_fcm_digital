@@ -69,6 +69,7 @@ jobs:
       - name: Update Bundler and resolve dependencies
         run: |
           gem install bundler -v $(grep -A1 'BUNDLED WITH' Gemfile.lock | tail -n1)
+          bundle config set frozen false
           bundle update error_highlight
           bundle install
 
@@ -96,6 +97,7 @@ jobs:
       - name: Update Bundler and resolve dependencies
         run: |
           gem install bundler -v $(grep -A1 'BUNDLED WITH' Gemfile.lock | tail -n1)
+          bundle config set frozen false
           bundle update error_highlight
           bundle install
 
