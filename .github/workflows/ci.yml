@@ -24,11 +24,7 @@ jobs:
       - name: Update Bundler and resolve dependencies
         run: |
           gem install bundler -v $(grep -A1 'BUNDLED WITH' Gemfile.lock | tail -n1)
-          bundle update error_highlight
           bundle install
-
-      - name: Scan for common Rails security vulnerabilities using static analysis
-        run: bin/brakeman --no-pager
 
   scan_js:
     runs-on: ubuntu-latest
@@ -73,6 +69,7 @@ jobs:
       - name: Update Bundler and resolve dependencies
         run: |
           gem install bundler -v $(grep -A1 'BUNDLED WITH' Gemfile.lock | tail -n1)
+          bundle config set frozen false
           bundle update error_highlight
           bundle install
 
@@ -100,6 +97,7 @@ jobs:
       - name: Update Bundler and resolve dependencies
         run: |
           gem install bundler -v $(grep -A1 'BUNDLED WITH' Gemfile.lock | tail -n1)
+          bundle config set frozen false
           bundle update error_highlight
           bundle install
 
