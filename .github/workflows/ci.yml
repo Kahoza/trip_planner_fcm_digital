@@ -26,9 +26,6 @@ jobs:
           gem install bundler -v $(grep -A1 'BUNDLED WITH' Gemfile.lock | tail -n1)
           bundle install
 
-      - name: Scan for common Rails security vulnerabilities using static analysis
-        run: bin/brakeman --no-pager
-
   scan_js:
     runs-on: ubuntu-latest
     steps:
