@@ -24,7 +24,6 @@ jobs:
       - name: Update Bundler and resolve dependencies
         run: |
           gem install bundler -v $(grep -A1 'BUNDLED WITH' Gemfile.lock | tail -n1)
-          bundle update error_highlight
           bundle install
 
       - name: Scan for common Rails security vulnerabilities using static analysis
